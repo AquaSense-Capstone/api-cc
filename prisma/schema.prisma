@@ -11,19 +11,25 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  name     String
-  password String
-  reports  Report[]
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  password  String
+  reports   Report[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Report {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   photo       String?
   category    String
   address     String
   description String
-  user        User    @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
   userId      Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
