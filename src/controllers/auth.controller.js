@@ -4,11 +4,11 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-exports.signup = async (req, res) => {
-  const { fullName, email } = req.body;
+export const signup = async (req, res) => {
+  const { name, email } = req.body;
   let { password } = req.body;
-  const salt = bcrypt.genSaltSync(10);
-  password = bcrypt.hashSync(password, salt);
+
+  password = bcrypt.hashSync(password, 8);
 
   // check if email already exists registered
   const checkUser = await prisma.user.findFirst({
@@ -26,23 +26,22 @@ exports.signup = async (req, res) => {
 
   const user = await prisma.user.create({
     data: {
-      fullName,
+      name,
       email,
       password,
     },
   });
 
   if (user) {
-    res,
-      status(201).json({
-        status: "success",
-        message: "User created successfully!",
-        data: user,
-      });
+    res.status(201).json({
+      status: "success",
+      message: "User created successfully!",
+      data: user,
+    });
   }
 };
 
-exports.signin = async (req, res) => {
+export const signin = async (req, res) => {
   const { email, password } = req.body;
 
   const userEmail = await prisma.user.findFirst({
@@ -51,5 +50,39 @@ exports.signin = async (req, res) => {
     },
   });
 
+  if (!userEmail) {
+    return res.status(400).json({
+      status: "failed",
+      message: "email not found",
+    });
+  }
+
   const passwordValid = bcrypt.compareSync(password, userEmail.password);
+  if (!passwordValid) {
+    return res.status(400).json({
+      status: "failed",
+      message: "email or password incorrect!",
+    });
+  }
+
+  const token = jwt.sign(
+    {
+      id: userEmail.id,
+      email: userEmail.email,
+    },
+    process.env.JWT_SECRET
+  );
+
+  const data = {
+    id: userEmail.id,
+    email: userEmail.email,
+    name: userEmail.name,
+  };
+
+  res.status(200).json({
+    status: "success",
+    message: "login success",
+    token: token,
+    data,
+  });
 };
