@@ -8,7 +8,7 @@ import authRoute from "./src/routes/auth.route.js";
 
 // starterrrrrpacckkkkkkkkkkkk
 const app = Express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const io = new Server(3001, {});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
