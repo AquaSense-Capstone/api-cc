@@ -17,7 +17,7 @@ app.use(cors({ origin: "*" }));
 
 app.use("/api/v1/auth", authRoute);
 app.get("/", (req, res) => {
-  res.send("hi there");
+  res.send("howdyy");
 });
 
 app.listen(port, () => {
