@@ -15,6 +15,7 @@ RUN npm install
 
 # execute prisma
 RUN npx prisma generate
+RUN npx prisma db push
 
 ARG DATABASE_USER=root
 ARG DATABASE_NAME=db_aquasense
