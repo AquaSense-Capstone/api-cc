@@ -1,9 +1,12 @@
 // import modules
 import Express from "express";
 import bodyParser from "body-parser";
-import { Server } from "socket.io";
 import cors from "cors";
 import multer from "multer";
+import morgan from "morgan";
+
+// Import socket.io library
+import { Server } from "socket.io";
 
 // Import own code
 import authRoute from "./src/routes/auth.route.js";
@@ -16,6 +19,8 @@ const io = new Server(3001, {});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({ origin: "*" }));
+app.use(morgan("combined"));
+
 // using multipart/form-data
 app.use(formData.array());
 
