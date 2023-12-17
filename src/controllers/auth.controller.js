@@ -8,35 +8,41 @@ export const signup = async (req, res) => {
   const { name, email } = req.body;
   let { password } = req.body;
 
-  password = bcrypt.hashSync(password, 8);
-
-  // check if email already exists registered
-  const checkUser = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  });
-
-  if (checkUser) {
-    return res.status(409).json({
-      status: "failed",
-      message: "Email already exists!",
+  try {
+    password = bcrypt.hashSync(password, 8);
+    // check if email already exists registered
+    const checkUser = await prisma.user.findFirst({
+      where: {
+        email,
+      },
     });
-  }
 
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password,
-    },
-  });
+    if (checkUser) {
+      return res.status(409).json({
+        status: "failed",
+        message: "Email already exists!",
+      });
+    }
 
-  if (user) {
-    res.status(201).json({
-      status: "success",
-      message: "User created successfully!",
-      data: user,
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password,
+      },
+    });
+
+    if (user) {
+      res.status(201).json({
+        status: "success",
+        message: "User created successfully!",
+        data: user,
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: "Data cannot be null",
+      status: "failed",
     });
   }
 };
@@ -44,45 +50,52 @@ export const signup = async (req, res) => {
 export const signin = async (req, res) => {
   const { email, password } = req.body;
 
-  const userEmail = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  });
-
-  if (!userEmail) {
-    return res.status(400).json({
-      status: "failed",
-      message: "email not found",
+  try {
+    const userEmail = await prisma.user.findFirst({
+      where: {
+        email,
+      },
     });
-  }
 
-  const passwordValid = bcrypt.compareSync(password, userEmail.password);
-  if (!passwordValid) {
-    return res.status(400).json({
-      status: "failed",
-      message: "email or password incorrect!",
-    });
-  }
+    if (!userEmail) {
+      return res.status(400).json({
+        status: "failed",
+        message: "email not found",
+      });
+    }
 
-  const token = jwt.sign(
-    {
+    const passwordValid = bcrypt.compareSync(password, userEmail.password);
+    if (!passwordValid) {
+      return res.status(400).json({
+        status: "failed",
+        message: "email or password incorrect!",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: userEmail.id,
+        email: userEmail.email,
+      },
+      process.env.JWT_SECRET
+    );
+
+    const data = {
       id: userEmail.id,
       email: userEmail.email,
-    },
-    process.env.JWT_SECRET
-  );
+      name: userEmail.name,
+    };
 
-  const data = {
-    id: userEmail.id,
-    email: userEmail.email,
-    name: userEmail.name,
-  };
-
-  res.status(200).json({
-    status: "success",
-    message: "login success",
-    token: token,
-    data,
-  });
+    res.status(200).json({
+      status: "success",
+      message: "login success",
+      token: token,
+      data,
+    });
+  } catch (error) {
+    return res.status(404).json({
+      message: "Authentication Failed",
+      status: "failed",
+    });
+  }
 };
