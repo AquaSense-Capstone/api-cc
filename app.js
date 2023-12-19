@@ -10,9 +10,11 @@ import { Server } from "socket.io";
 
 // Import own code
 import authRoute from "./src/routes/auth.route.js";
+import reportRoute from "./src/routes/report.route.js";
 
 // starterrrrrpacckkkkkkkkkkkk
 const app = Express();
+const ROUTE_PREFIX = "/api/v1";
 const port = process.env.PORT || 8000;
 const formData = multer();
 const io = new Server(3001, {});
@@ -24,7 +26,11 @@ app.use(morgan("combined"));
 // using multipart/form-data
 app.use(formData.array());
 
-app.use("/api/v1/auth", authRoute);
+// API Route
+app.use(`${ROUTE_PREFIX}/auth`, authRoute);
+app.use(`${ROUTE_PREFIX}/report`, reportRoute);
+
+// WEB Route
 app.get("/", (req, res) => {
   res.send("howdyy");
 });
