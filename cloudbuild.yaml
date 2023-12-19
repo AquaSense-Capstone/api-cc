@@ -24,3 +24,16 @@ steps:
         "--allow-unauthenticated",
         "--set-secrets=DATABASE_URL=db_url:latest",
       ]
+options:
+  substitutionOption: ALLOW_LOOSE
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _SERVICE_NAME: api-cc
+  _DEPLOY_REGION: asia-southeast2
+  _TRIGGER_ID: 860b2c6a-a784-4d74-b533-a6694da5957b
+  _AR_HOSTNAME: asia-southeast2-docker.pkg.dev
+  _PLATFORM: managed
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - api-cc
