@@ -24,3 +24,6 @@ steps:
         "--allow-unauthenticated",
         "--set-secrets=JWT_SECRET=JWT_SECRET:latest, DATABASE_URL=_DATABASE_URL:latest",
       ]
+    options:
+      substitutionOption: ALLOW_LOOSE
+      logging: CLOUD_LOGGING_ONLY
