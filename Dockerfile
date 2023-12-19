@@ -13,9 +13,9 @@ RUN npm install
 # copy all files
 COPY . .
 
-# Bind port 3000
-EXPOSE 8080
-ENV PORT=8080
+# Bind port 8000
+EXPOSE 8000
+ENV PORT=8000
 ENV HOST=0.0.0.0
 
 # Run the app
