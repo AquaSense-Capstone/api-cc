@@ -22,7 +22,9 @@ steps:
         "--platform",
         "managed",
         "--allow-unauthenticated",
-        "--set-secrets=JWT_SECRET=JWT_SECRET:latest, DATABASE_URL=DATABASE_URL:latest",
+        "--set-secrets=JWT_SECRET=JWT_SECRET:latest, DATABASE_URL=_DATABASE_URL:latest",
       ]
     images: "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}"
-    logsBucket: "gs://aquasense-storage/logs"
+    options:
+      substitutionOption: ALLOW_LOOSE
+      logging: CLOUD_LOGGING_ONLY
