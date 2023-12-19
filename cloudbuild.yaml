@@ -1,33 +1,28 @@
 steps:
-  # Build the container image
   - name: gcr.io/cloud-builders/docker
     args:
-      ["build", "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
-    id: Building the container image
-  # Push the container image to Container Registry
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}"]
-    id: Pushing the image to registry
-  # Deploy container image to Cloud Run
+      - "build"
+      - "-t"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"
+      - "."
+    id: "Build image"
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - "push"
+      - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"
+    id: "Push to gcr.io"
   - name: "gcr.io/cloud-builders/gcloud"
     args:
-      [
-        "run",
-        "deploy",
-        "${_SERVICE_NAME}",
-        "--image",
-        "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}",
-        "--region",
-        "asia-southeast2",
-        "--platform",
-        "managed",
-        "--allow-unauthenticated",
-        "--set-secrets=DATABASE_URL=db_url:latest,JWT_SECRET=jwt_secret:latest",
-      ]
-options:
-  substitutionOption: ALLOW_LOOSE
-  logging: CLOUD_LOGGING_ONLY
-tags:
-  - gcp-cloud-build-deploy-cloud-run
-  - gcp-cloud-build-deploy-cloud-run-managed
-  - api-cc
+      - "run"
+      - "deploy"
+      - "${_SERVICE_NAME}"
+      - "--image=gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"
+      - "--region=asia-southeast2"
+      - "--cpu=1"
+      - "--memory=1024Mi"
+      - "--allow-unauthenticated"
+      - "--set-secrets=JWT_SECRET=jwt_secret:latest,DATABASE_URL=db_url:latest"
+    id: "Deploy Project"
+images:
+  - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"
+logsBucket: "gs://${_SERVICE_NAME}/logs"
