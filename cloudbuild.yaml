@@ -25,4 +25,3 @@ steps:
     id: "Deploy Project"
 images:
   - "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:$SHORT_SHA"
-logsBucket: "gs://${_SERVICE_NAME}/logs"
