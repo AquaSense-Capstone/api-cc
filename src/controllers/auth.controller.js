@@ -31,19 +31,11 @@ export const signup = async (req, res) => {
         password,
       },
     });
-    const token = jwt.sign(
-      {
-        id: userEmail.id,
-        email: userEmail.email,
-      },
-      process.env.JWT_SECRET
-    );
 
     if (user) {
       res.status(201).json({
         status: "success",
         message: "User created successfully!",
-        token: token,
         data: user,
       });
     }
@@ -66,7 +58,7 @@ export const signin = async (req, res) => {
     });
 
     if (!userEmail) {
-      return res.status(401).json({
+      return res.status(400).json({
         status: "failed",
         message: "email not found",
       });
@@ -74,7 +66,7 @@ export const signin = async (req, res) => {
 
     const passwordValid = bcrypt.compareSync(password, userEmail.password);
     if (!passwordValid) {
-      return res.status(401).json({
+      return res.status(400).json({
         status: "failed",
         message: "email or password incorrect!",
       });
@@ -101,7 +93,7 @@ export const signin = async (req, res) => {
       data,
     });
   } catch (error) {
-    return res.status(401).json({
+    return res.status(404).json({
       message: "Authentication Failed",
       status: "failed",
     });
