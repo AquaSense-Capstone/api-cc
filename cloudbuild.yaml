@@ -22,7 +22,7 @@ steps:
         "--platform",
         "managed",
         "--allow-unauthenticated",
-        "--set-secrets=DATABASE_URL=db_url:latest",
+        "--set-secrets=DATABASE_URL=db_url:latest,JWT_SECRET=jwt_secret:latest",
       ]
 options:
   substitutionOption: ALLOW_LOOSE
