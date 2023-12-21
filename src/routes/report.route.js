@@ -1,12 +1,18 @@
 import Express from "express";
 import passport from "passport";
-import { addReport } from "../controllers/report.controller.js";
+import { addReport, getReport } from "../controllers/report.controller.js";
 const report = Express.Router();
 
 report.post(
-  "/add",
+  "/reports",
   passport.authenticate("jwt", { session: false }),
   addReport
+);
+
+report.get(
+  "/reports",
+  passport.authenticate("jwt", { session: false }),
+  getReport
 );
 
 export default report;

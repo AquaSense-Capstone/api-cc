@@ -55,3 +55,12 @@ export const addReport = async (req, res, next) => {
     });
   }
 };
+
+export const getReport = async (req, res) => {
+  const reports = await prisma.report.findMany();
+
+  return res.status(200).json({
+    status: "success",
+    data: reports,
+  });
+};
